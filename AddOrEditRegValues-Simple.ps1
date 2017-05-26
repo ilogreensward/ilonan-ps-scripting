@@ -1,35 +1,39 @@
-﻿#Yleiskäyttöinen rekisterimuutos/lisäysskripti. Vaihda vain muuttujat reg, name, value ja propType oikeiksi.
+﻿#A simple script to add/update registry values in Windows. 
+#For Win7 onwards
+#2017 ilogreensward
 
-$reg = "HKCU:\Control Panel\International"  #rekisterihaara, jossa muutoksia tehdään
-$name = "sShortTime"                        #rekisteriproperty, jota muutetaan
-$value = "HH:mm"                            #rekisteripropertyn arvo, jota muutetaan
-$propType = "String"                        #rekisteripropertyn tyyppi
-
-
-
-
-IF((Test-Path $reg)){ #jos rekisterihaara on olemassa
-
-echo "Löydetty rekisterihaara $reg "
-echo "Annetaan propertylle $name arvoksi $value"
+$reg = "HKCU:\Control Panel\International"  # Registry path to work in
+$name = "sShortTime"                        # Registry property to be changed
+$value = "HH:mm"                            # Value of said registry property
+$propType = "String"                        # Type of registry property (String, ExpandString, Binary, Dword, MultiString, Qword, Unknown)
 
 
-$confirmation = Read-Host "Oletko varma, että haluat lisätä nämä tiedot rekisteriin? Y/N "
+echo "Registry Property Modification Script"
+
+IF(!(Test-Path $reg)){ 
+
+echo "Couldn't find $reg. Please check the path. "
+
+}
+else{
+
+echo "Found registry path $reg "
+echo "Setting property $name with value $value"
+
+
+$confirmation = Read-Host "Are you sure you wish to perform these modifications? Y/N "
 IF($confirmation -eq 'y'){
 
-echo "Tarkasta, että muutetut tiedot ovat oikein: "
+echo "Please check that the information below is correct: "
 New-ItemProperty -Path $reg -Name $name -Value $value -PropertyType $propType -Force
 
 }
 else{
 
-echo "Toiminto keskeytetty" 
+echo "Operation cancelled. Exiting script." 
 
 }
-}
-else{
 
-echo "Rekisterihaaraa ei löydy. Tarkastathan oikeinkirjoituksen"
 
 }
 
